@@ -19,7 +19,7 @@ app.get('/',(req,res)=>{
 app.get('/files/:filename',(req,res)=>{
     fs.readFile(`./files/${req.params.filename}`,"utf-8", function(err,data){
         if(err) throw err;
-        res.render('show');
+        res.render('show',{filename: req.params.filename, filedata:data});
     });
 });
 
