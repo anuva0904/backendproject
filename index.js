@@ -39,7 +39,10 @@ app.post('/create',(req,res)=>{
 
 app.post('/edit/:filename',(req,res)=>{
     const oldpath=`./files/${req.params.filename}`;
-    const newfilename=req.body.title.split(' ').join('')+'.txt';
+    let newfilename=req.body.title.split(' ').join('');
+    if (!newfilename.endsWith('.txt')) {
+        newfilename += '.txt';
+    }
     const newpath=`./files/${newfilename}`;
     const newdetails=req.body.details;
 
