@@ -23,6 +23,12 @@ app.get('/files/:filename',(req,res)=>{
     });
 });
 
+app.get('/edit/:filename',(req,res)=>{
+    fs.readFile(`./files/${req.params.filename}`,"utf-8", function(err,data){
+        if(err) throw err;
+        res.render('edit',{filename: req.params.filename, filedata:data});
+    });
+});
 
 app.post('/create',(req,res)=>{
     fs.writeFile(`./files/${req.body.title.split(' ').join('')}.txt`, req.body.details, (err)=>{
@@ -31,6 +37,30 @@ app.post('/create',(req,res)=>{
     });
 });
 
+app.post('/edit/:filename',(req,res)=>{
+    const oldpath=`./files/${req.params.filename}`;
+    const newfilename=req.body.title.split(' ').join('')+'.txt';
+    const newpath=`./files/${newfilename}`;
+    const newdetails=req.body.details;
 
+    if(req.params.filename !== newfilename){
+        fs.rename(oldpath,newpath , (err)=>{
+            if(err) throw err;
+            fs.writeFile(newpath,newdetails,(err)=>{
+                if(err) throw err;
+                res.redirect('/');
+            })
+        })
+    }
+    else{
+        fs.writeFile(oldpath,newdetails,(err)=>{
+            if(err) throw err;
+            res.redirect('/');
+        })
+    }
 
-app.listen(3000);
+});
+
+app.listen(3000, () => {
+    console.log('Server is running on port 3000');
+});
